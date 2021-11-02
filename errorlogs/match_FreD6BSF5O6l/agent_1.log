@@ -1,0 +1,12 @@
+=== Agent Install Log ===
+=== Agent Compile Log ===
+=== Agent Error Log ===
+Traceback (most recent call last):
+  File "C:\LuxAI\rexAI\main.py", line 3, in <module>
+    from agent import agent
+  File "C:\LuxAI\rexAI\agent.py", line 14, in <module>
+    import display
+  File "C:\LuxAI\rexAI\display.py", line 4, in <module>
+    import pygame, sys
+ModuleNotFoundError: No module named 'pygame'
+Agent timed out

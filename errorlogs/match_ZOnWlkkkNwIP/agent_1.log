@@ -1,0 +1,15 @@
+=== Agent Install Log ===
+=== Agent Compile Log ===
+=== Agent Error Log ===
+['agent.py', 'display.py', 'gameDataAndResults.txt', 'lux', 'main.py', 'replays', 'simple.tar.gz', '__init__.py', '__pycache__']
+Traceback (most recent call last):
+  File "C:\LuxAI\rexAI\main.py", line 90, in <module>
+    actions = agent(observation, None,doGraphics)
+  File "C:\LuxAI\rexAI\agent.py", line 200, in agent
+    instructionData = parseInstructions("gameDataAndResults.tx")
+  File "C:\LuxAI\rexAI\agent.py", line 58, in parseInstructions
+    line = readLastLineFromFile(filename)
+  File "C:\LuxAI\rexAI\agent.py", line 43, in readLastLineFromFile
+    with open(filename, 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'gameDataAndResults.tx'
+Agent timed out
