@@ -10,12 +10,11 @@ import subprocess
 import shlex
 import pygame
 
+
 def readJson(dump):
     enc = json.loads(dump)
-    dataType = np.dtype(enc[0])
-    dataArray = np.frombuffer(base64.decodestring(enc[1]), dataType)
-    if len(enc) > 2:
-        dataArray.reshape(enc[2])
+    dataArray = enc
+    print("data array in LuxML:",dataArray)
     return dataArray
 
 
@@ -32,22 +31,25 @@ def getResults():
 
 
 def encodeJson(inputLists):
-    nparray = np.array([inputLists[0],inputLists[1],inputLists[2],inputLists[3]],dtype=object)
-    return json.dumps([str(nparray.dtype), base64.b64encode(nparray), nparray.shape])
+    nparray = np.array([inputLists], dtype=object)
+    print("encode:",base64.b64encode(nparray).decode('utf-8'))
+    return json.dumps([str(nparray.dtype), nparray.tolist(), nparray.shape])
+
 
 def writeToFile(filename, string):
     with open(filename, 'a') as f:
-        f.write(string)
+        f.write(string+ '\n')
 
 
 def writeInstructions(inputLists):
     inputString = encodeJson(inputLists)
     print(inputString)
-    writeToFile("gameDataAndResults.txt", inputString)
+    writeToFile("C:/LuxAI/rexai/gameDataAndResults.txt", inputString)
+
 
 def runGame(inputLists):
     writeInstructions(inputLists)
-    command = "C:/Users/Student/AppData/Roaming/npm/lux-ai-2021.cmd C:/LuxAI/simple/main.py C:/LuxAI/rexAI/main.py --out replay.json"
+    command = "C:/Users/Student/AppData/Roaming/npm/lux-ai-2021.cmd C:/LuxAI/simple/main.py C:/LuxAI/rexAI/main.py --maxtime 3000 --out replay.json"
     args = shlex.split(command)
     print(args)
     proc = subprocess.Popen(args)
@@ -57,4 +59,4 @@ def runGame(inputLists):
 
 
 score = runGame([[1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]])
-print(score)
+print("score:",score)
