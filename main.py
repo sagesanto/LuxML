@@ -88,7 +88,7 @@ def runGame(inputLists):
 
     overwriteFile("C:/Users/Student/PycharmProjects/LuxML/summary.csv", str(summaryFrame.to_csv()))
     print(summaryFrame)
-    return score / gamesPerBatch
+    return -1 * (score / gamesPerBatch)
 
 
 array = np.array([[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]], dtype="int64")
