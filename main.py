@@ -97,7 +97,7 @@ array = np.array([[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1
 def con(x):
     return max[x - int(x)] == 0
 
-
+# try to warm-start / use optuna
 cons = ({'type': 'eq', 'fun': lambda x: max([x[i] - int(x[i]) for i in range(len(x))])})
 res = scipy.optimize.minimize(runGame, array, method="COBYLA", options = {"rhobeg" : 5})
 output = str(
