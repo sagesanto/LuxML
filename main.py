@@ -11,6 +11,7 @@ import subprocess
 import shlex
 import pygame
 from scipy.optimize import minimize, rosen, rosen_der
+import optuna
 
 summaryFrame = pd.DataFrame()
 batchNumber = 0
@@ -74,7 +75,7 @@ def runGame(inputLists):
     global summaryFrame
     batchNumber += 1
     writeInstructions(inputLists)
-    command = "C:/Users/Student/AppData/Roaming/npm/lux-ai-2021.cmd C:/LuxAI/simple/main.py C:/LuxAI/rexAI/main.py --maxtime 3000 --out replay.json"
+    command = "C:/Users/Student/AppData/Roaming/npm/lux-ai-2021.cmd C:/LuxAI/simple/main.py C:/LuxAI/rexAI/main.py --maxtime 3000 --out replay.json node --no-warnings"
     args = shlex.split(command)
     score = 0
     gamesPerBatch = 20
@@ -98,10 +99,31 @@ def con(x):
     return max[x - int(x)] == 0
 
 # try to warm-start / use optuna
-cons = ({'type': 'eq', 'fun': lambda x: max([x[i] - int(x[i]) for i in range(len(x))])})
-res = scipy.optimize.minimize(runGame, array, method="COBYLA", options = {"rhobeg" : 5})
-output = str(
-    "result:" + res.x + "success:" + res.success + "message:" + res.message + "iterations:" + res.nit + "lastScore:" +
-    getResults())
-writeToFile("C:/LuxAI/rexai/scores.txt", output)
-print(output)
+
+def objective(trial):
+    inputLists = suggestArray(24,trial)
+    return runGame(inputLists)
+
+def suggestArray(length,trial):
+    valsArray = []
+    for i in range(length):
+        valsArray.append(trial.suggest_float(str(i),0,200))
+    return valsArray
+
+
+sampler = optuna.samplers.CmaEsSampler()
+study = optuna.create_study(sampler=sampler)
+study.optimize(objective, n_trials=2000)
+
+bestParams = study.best_params
+bestVal = study.best_value
+
+outputStr = "bestParams" + str(bestParams.values()) + "bestVal:" + str(bestVal)
+
+# cons = ({'type': 'eq', 'fun': lambda x: max([x[i] - int(x[i]) for i in range(len(x))])})
+# res = scipy.optimize.minimize(runGame, array, method="COBYLA", options = {"rhobeg" : 5})
+# output = str(
+#     "result:" + res.x + "success:" + res.success + "message:" + res.message + "iterations:" + res.nit + "lastScore:" +
+#     getResults())
+writeToFile("C:/Users/Student/PycharmProjects/LuxML/studyOutputs.txt", outputStr)
+# print(output)
