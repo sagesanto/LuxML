@@ -12,7 +12,7 @@ import shlex
 import pygame
 from scipy.optimize import minimize, rosen, rosen_der
 import optuna
-
+from optuna.trial import TrialState
 summaryFrame = pd.DataFrame()
 batchNumber = 0
 
@@ -98,21 +98,23 @@ array = np.array([[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1
 def con(x):
     return max[x - int(x)] == 0
 
+
 # try to warm-start / use optuna
 
 def objective(trial):
-    inputLists = suggestArray(24,trial)
+    inputLists = suggestArray(24, trial)
     return runGame(inputLists)
 
-def suggestArray(length,trial):
+
+def suggestArray(length, trial):
     valsArray = []
     for i in range(length):
-        valsArray.append(trial.suggest_float(str(i),0,200))
+        valsArray.append(trial.suggest_float(str(i), 0, 200))
     return valsArray
 
 
-sampler = optuna.samplers.CmaEsSampler()
-study = optuna.create_study(sampler=sampler)
+study = optuna.create_study(storage="sqlite:///cmaes.db", study_name="shortTest", load_if_exists=True)
+study.sampler = optuna.samplers.CmaEsSampler() #list of frozenTrials #source_trials=study.get_trials(states=[TrialState.COMPLETE])) #source_trials=study.trials)
 study.optimize(objective, n_trials=2000)
 
 bestParams = study.best_params
